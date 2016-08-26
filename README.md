@@ -1,5 +1,7 @@
 # rtfmbot
 
+Disclaimer: This is _way_ early stage.  I don't recommend it for "production" just yet.
+
 # Introduction
 
 We're all tired of answering questions when the asker clearly hasn't bothered to RTFM or put in any effort.  Save your context switching for things that matter and deploy
@@ -44,6 +46,8 @@ NOTE: example.json is ignored by the trainer.
 1. Fusion/Solr storage adapter impleemntation
 1. Do something interesting with new questions
 1. Better question parsing
+1. Normalize scoring somehow for the SearchHubLogicAdapter so it the others have a chance.
+1. Feedback from Slack reactions
 
 # Contributing
 
