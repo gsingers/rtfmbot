@@ -1,0 +1,5 @@
+chatterbot
+slackclient
+requests
+python-Levenshtein
+nltk

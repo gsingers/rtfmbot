@@ -1,3 +1,9 @@
+config*.cfg
+.idea
+*.iml
+build
+src/python/training/*.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
