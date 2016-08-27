@@ -69,5 +69,5 @@ class SlackPythonInputAdapter(InputAdapter):
                         if sub_item["channel"] in self.monitor:
                             #if we have a positive reaction, let's do something smart to save the message
                             print item
-        print "q: {0} data: {1}".format(result, result.extra_data)
+        #print "q: {0} data: {1}".format(result, result.extra_data)
         return result
