@@ -4,8 +4,10 @@ Disclaimer: This is _way_ early stage.  I don't recommend it for "production" ju
 
 # Introduction
 
-We're all tired of answering questions when the asker clearly hasn't bothered to RTFM or put in any effort.  Save your context switching for things that matter and deploy
-the RTFMbot to your Slack network.
+We're all tired of answering questions when the asker clearly hasn't bothered to RTFM or put in any effort.  Perhaps that "asker" is even
+  you sometimes. Save your context switching for things that matter and deploy
+the RTFMbot to your Slack network.  Slack is great for communication, but sometimes it is too good and people ask questions when
+answers are easily found on the web or in your knowledge base.
 
 Building out on the Slack Python Client and [ChatterBot](https://github.com/gunthercox/ChatterBot), this little bot also can dynamically pull in answers from the Open Source community via
 [SearchHub](http://searchhub.lucidworks.com).  It can also be extended to pull in other sources with a little work.
