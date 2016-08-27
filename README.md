@@ -17,12 +17,12 @@ Building out on the Slack Python Client and [ChatterBot](https://github.com/gunt
 You'll need:
 
 1. Python 2.7 (VirtualEnv recommended)
-
+1. NLTK Data.  See http://www.nltk.org/data.html 
  
 ## Installing
  
 1. virtualenv venv
-1. venv/bin/activate
+1. source venv/bin/activate
 1. pip install -r requirements.txt
 
 ## Configuring

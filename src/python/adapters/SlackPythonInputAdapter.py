@@ -11,6 +11,7 @@ class SlackPythonInputAdapter(InputAdapter):
         super(SlackPythonInputAdapter, self).__init__(**kwargs)
         self.sc = kwargs.get("slack_client")
         channel_names = kwargs.get("slack_channels")
+        self.bot_name = kwargs.get("slack_bot_name")
         self.monitor = SlackUtil.get_channels_to_monitor(self.sc, channel_names)
         if not self.sc.rtm_connect():
             raise AttributeError()
@@ -27,6 +28,10 @@ class SlackPythonInputAdapter(InputAdapter):
             return True
         return False
 
+    def is_bot_ask(self, text):
+        if text.startswith(self.bot_name):
+            return True
+        return False
 
     def process_input(self, *args, **kwargs):
         new_message = False
@@ -42,22 +47,27 @@ class SlackPythonInputAdapter(InputAdapter):
                     if "channel" in item and item["channel"] in self.monitor:
                         if item["type"] == "message":
                             if self.use_message(item):
-                                is_q = self.is_question(item["text"])
+                                input_text = item["text"]
+                                is_q = self.is_question(input_text)
+                                is_bot_ask = self.is_bot_ask(input_text)
+                                if is_bot_ask:
+                                    input_text = input_text.replace(self.bot_name, "").strip()
                                 #Create the statement
                                 new_message = True
-                                result = Statement(item["text"])
+                                result = Statement(input_text)
                                 result.add_extra_data("is_question", is_q)
+                                result.add_extra_data("is_bot_ask", is_bot_ask)
                                 result.add_extra_data("slack_channel", item["channel"])
                                 result.add_extra_data("slack_team", item["team"])
                                 result.add_extra_data("slack_user", item["user"])
                                 result.add_extra_data("slack_time_stamp", item["ts"])
+                                break
                     elif item["type"] == "reaction_added":
                         #{u'event_ts': u'1472227659.147767', u'item': {u'type': u'message', u'ts': u'1472227650.000003', u'channel': u'C2550PQD9'}, u'type': u'reaction_added', u'user': u'U027M0MDZ', u'reaction': u'+1'}
                         sub_item = item["item"]
+                        new_message = False
                         if sub_item["channel"] in self.monitor:
                             #if we have a positive reaction, let's do something smart to save the message
                             print item
-
-            time.sleep(1)
-
+        print "q: {0} data: {1}".format(result, result.extra_data)
         return result

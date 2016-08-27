@@ -1,5 +1,5 @@
 import ConfigParser
-
+import sys, traceback
 from slackclient import SlackClient
 from chatterbot import ChatBot
 import os
@@ -19,7 +19,7 @@ token = config.get("Slack", "token")  # found at https://api.slack.com/web#authe
 channel_str = config.get("Slack", "channels")
 channel_names = []
 if channel_str:
-    print (channel_str)
+    #print (channel_str)
     channels = channel_str.split(",")
     for channel in channels:
         #print channel
@@ -63,11 +63,12 @@ for file in files:
 
 # Train based on the english conversations corpus
 #chatbot.train("chatterbot.corpus.english.conversations")
-
+print "Starting Chatbot"
 while True:
     try:
         bot_input = chatbot.get_response(None)
     except(Exception):
-        print "Exception: {0}".format(Exception)
-        break
+        print "Exception"
+        traceback.print_exc(Exception)
+
 

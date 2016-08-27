@@ -21,13 +21,19 @@ class SearchHubLogicAdapter(LogicAdapter):
 
 
     def can_process(self, statement):
-        print "can process!"
-        print statement
-        return True
+        print statement.extra_data
+        is_q = False
+        is_bot_ask = False
+        if "is_question" in statement.extra_data:
+            is_q = statement.extra_data["is_question"]
+        if "is_bot_ask" in statement.extra_data:
+            is_bot_ask = statement.extra_data["is_bot_ask"]
+        return is_q or is_bot_ask
+
 
     def process(self, statement):
-        print "calculating: {0}".format(statement)
-        result = Statement("Hi")
+        print "calculating: {0}, {1}".format(statement, statement.extra_data)
+        result = None
         params = {
             "wt":"json",
             "q": statement.text,
@@ -35,7 +41,9 @@ class SearchHubLogicAdapter(LogicAdapter):
             "fl": "id,title,subject,body,score",
             "fq":"isBot:false"
         }
-        print "params: {0}".format(params)
+        input_channel = statement.extra_data["slack_channel"]
+        is_q = statement.extra_data["is_question"]
+        is_bot_ask = statement.extra_data["is_bot_ask"]
         response = requests.get(self.shub_url, params)
         if response.status_code != 200:
             return 0, None
@@ -54,7 +62,7 @@ class SearchHubLogicAdapter(LogicAdapter):
                 docs = rsp["response"]["docs"]
                 print "docs: {0}".format(docs[0])
                 #confidence = docs[0]["score"]
-                #should we put a score threshold or normalize?
+                #Confidence is the average of the similarity scores, for now
                 i = 0
                 for doc in docs:
                     display = ""
@@ -71,6 +79,12 @@ class SearchHubLogicAdapter(LogicAdapter):
                     i += 1
                 result = Statement(response)
 
+                if i > 0:
+                    confidence = confidence / i
+                    if is_bot_ask: # boost confidence if the user specifically invoked the kraken
+                        confidence += 10
+
         print "Conf: {0}, Res: {1}".format(confidence, result)
+
         return confidence, result
 
