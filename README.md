@@ -42,8 +42,8 @@ NOTE: example.json is ignored by the trainer.
 
 # TODO:
 
-1. Make the storage adapter setup configurable
-1. Fusion/Solr storage adapter impleemntation
+1. Make the adapters configurable
+1. Fusion/Solr storage adapter implementation
 1. Do something interesting with new questions
 1. Better question parsing
 1. Normalize scoring somehow for the SearchHubLogicAdapter so it the others have a chance.
