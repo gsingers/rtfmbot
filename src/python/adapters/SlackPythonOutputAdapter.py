@@ -11,7 +11,7 @@ class SlackPythonOutputAdapter(OutputAdapter):
         self.direct_to_user = False
         self.sc = kwargs.get("slack_client")
         #print "OCN: {0}".format(output_channel_name)
-        if output_channel_name == "DIRECT_TO_USER":
+        if output_channel_name.strip() == "DIRECT_TO_USER":
             self.output_channel = None
             self.direct_to_user = True
         else:

@@ -97,9 +97,9 @@ class SearchHubLogicAdapter(LogicAdapter):
                 print "Couldn't find results for {0}".format(params)
                 result = Statement("Shub no find answer.")
                 confidence = 0
-            print "Conf: {0}, Res: {1}".format(confidence, result)
+            #print "Conf: {0}, Res: {1}".format(confidence, result)
         else:
-            print "Couldn't find results for {0}".format(params)
+            #print "Couldn't find results for {0}".format(params)
             result = Statement("Shub no find answer.")
             confidence = 0
         result.extra_data = statement.extra_data

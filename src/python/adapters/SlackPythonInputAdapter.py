@@ -19,6 +19,8 @@ class SlackPythonInputAdapter(InputAdapter):
     def use_message(self, item):
         if "subtype" in item and item["subtype"] == "bot_message":
             return False
+        if "text" in item and item["text"].startswith("<@U"):
+            return False
         return True
 
     def is_question(self, text):
