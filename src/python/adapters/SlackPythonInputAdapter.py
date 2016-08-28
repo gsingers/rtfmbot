@@ -46,7 +46,7 @@ class SlackPythonInputAdapter(InputAdapter):
                     #{u'text': u'hi', u'ts': u'1472181456.000131', u'user': u'U027M0MDZ', u'team': u'T027EHDJB', u'type': u'message', u'channel': u'C03U0R1MB'}
                     if "channel" in item and item["channel"] in self.monitor:
                         if item["type"] == "message":
-                            if self.use_message(item):
+                            if self.use_message(item) and "text" in item:
                                 input_text = item["text"]
                                 is_q = self.is_question(input_text)
                                 is_bot_ask = self.is_bot_ask(input_text)

@@ -21,29 +21,37 @@ class SearchHubLogicAdapter(LogicAdapter):
 
 
     def can_process(self, statement):
-        print statement.extra_data
+        #print statement.extra_data
         is_q = False
         is_bot_ask = False
         if "is_question" in statement.extra_data:
             is_q = statement.extra_data["is_question"]
         if "is_bot_ask" in statement.extra_data:
             is_bot_ask = statement.extra_data["is_bot_ask"]
+        if statement.text.lower().startswith("shub:"):
+            return True
         return is_q or is_bot_ask
 
 
     def process(self, statement):
         print "calculating: {0}, {1}".format(statement, statement.extra_data)
         result = None
+        input_channel = statement.extra_data["slack_channel"]
+        is_q = statement.extra_data["is_question"]
+        is_bot_ask = statement.extra_data["is_bot_ask"]
+        text = statement.text
+        if is_bot_ask:#If the user specifically asks for 'searchhub' (shub), then strip it off
+            text = text[4:]
+
         params = {
             "wt":"json",
-            "q": statement.text,
+            "q": text,
             "rows": 3,
             "fl": "id,title,subject,body,score",
             "fq":"isBot:false"
         }
-        input_channel = statement.extra_data["slack_channel"]
-        is_q = statement.extra_data["is_question"]
-        is_bot_ask = statement.extra_data["is_bot_ask"]
+        #TODO: filter projects based on channels
+
         response = requests.get(self.shub_url, params)
         if response.status_code != 200:
             return 0, None
@@ -56,7 +64,7 @@ class SearchHubLogicAdapter(LogicAdapter):
             num_found = rsp["response"]["numFound"]
             print num_found
             if num_found > 0:
-                url = self.shub_display_url.format(self.host, self.port, urllib.urlencode({"q": statement.text}))
+                url = self.shub_display_url.format(self.host, self.port, urllib.urlencode({"q": text}))
                 response = "SearchHub says...\n\tSee full results: {0}\n\n".format(url)
 
                 docs = rsp["response"]["docs"]
@@ -71,11 +79,11 @@ class SearchHubLogicAdapter(LogicAdapter):
                     elif "subject" in doc:
                         display = doc["subject"]
                     #see how similar the display value is to the original
-                    similarity = self.closest.get_similarity(statement.text, display)
+                    similarity = self.closest.get_similarity(text, display)
                     print similarity
                     confidence += similarity#should we add here?  Probably not, but let's try it
 
-                    response += "{0}:\n\t{1}\n\t{2}\n".format(i, doc["id"], display)
+                    response += "{0}:\n\t{1}\n\t{2}\n".format(i, doc["id"], display.encode('utf-8'))
                     i += 1
                 result = Statement(response)
 
