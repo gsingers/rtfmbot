@@ -40,8 +40,9 @@ class SearchHubLogicAdapter(LogicAdapter):
         is_q = statement.extra_data["is_question"]
         is_bot_ask = statement.extra_data["is_bot_ask"]
         text = statement.text
-        if is_bot_ask:#If the user specifically asks for 'searchhub' (shub), then strip it off
-            text = text[4:]
+        if statement.text.lower().startswith("shub:"):#If the user specifically asks for 'searchhub' (shub), then strip it off
+            text = text[5:]
+            is_bot_ask = True
 
         params = {
             "wt":"json",
@@ -51,7 +52,7 @@ class SearchHubLogicAdapter(LogicAdapter):
             "fq":"isBot:false"
         }
         #TODO: filter projects based on channels
-
+        print "Params: {0}".format(params)
         response = requests.get(self.shub_url, params)
         if response.status_code != 200:
             return 0, None
@@ -68,7 +69,7 @@ class SearchHubLogicAdapter(LogicAdapter):
                 response = "SearchHub says...\n\tSee full results: {0}\n\n".format(url)
 
                 docs = rsp["response"]["docs"]
-                print "docs: {0}".format(docs[0])
+                #print "docs: {0}".format(docs[0])
                 #confidence = docs[0]["score"]
                 #Confidence is the average of the similarity scores, for now
                 i = 0
@@ -86,13 +87,21 @@ class SearchHubLogicAdapter(LogicAdapter):
                     response += "{0}:\n\t{1}\n\t{2}\n".format(i, doc["id"], display.encode('utf-8'))
                     i += 1
                 result = Statement(response)
+                #pass through the metadata, so we have channel info
 
                 if i > 0:
                     confidence = confidence / i
                     if is_bot_ask: # boost confidence if the user specifically invoked the kraken
                         confidence += 10
-
-        print "Conf: {0}, Res: {1}".format(confidence, result)
-
+            else:
+                print "Couldn't find results for {0}".format(params)
+                result = Statement("Shub no find answer.")
+                confidence = 0
+            print "Conf: {0}, Res: {1}".format(confidence, result)
+        else:
+            print "Couldn't find results for {0}".format(params)
+            result = Statement("Shub no find answer.")
+            confidence = 0
+        result.extra_data = statement.extra_data
         return confidence, result
 

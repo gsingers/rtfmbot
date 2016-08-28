@@ -59,7 +59,7 @@ for file in files:
     print "Training on " + file
     chatbot.train("training." + file.replace(".json", ""))
 # Train based on english greetings corpus
-#chatbot.train("chatterbot.corpus.english.greetings")
+chatbot.train("chatterbot.corpus.english")
 
 # Train based on the english conversations corpus
 #chatbot.train("chatterbot.corpus.english.conversations")
