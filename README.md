@@ -10,7 +10,7 @@ the RTFMbot to your Slack network.  Slack is great for communication, but someti
 answers are easily found on the web or in your knowledge base. 
 
 Building out on the Slack Python Client and [ChatterBot](https://github.com/gunthercox/ChatterBot), this little bot also can dynamically pull in answers from the Open Source community via
-[SearchHub](http://searchhub.lucidworks.com).  It can also be extended to pull in other sources with a little work.
+[SearchHub](http://searchhub.lucidworks.com) -- our community site built on [Lucidworks Fusion](http://lucidworks.com/products/fusion).  It can also be extended to pull in other sources with a little work.
 
 # Getting Started
 
